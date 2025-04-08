@@ -2,9 +2,11 @@ import React from 'react';
 import {Card, Col, Row, Avatar} from 'antd';
 
 const {Meta} = Card;
+import {useState,useEffect} from 'react';
+import { useAsync } from "react-async"
 import {EditOutlined, EllipsisOutlined, SettingOutlined} from '@ant-design/icons';
 import {BrowserRouter, Navigate, useNavigate, NavLink, Route, Routes} from "react-router-dom"
-import {Greet} from '../../wailsjs/go/main/App'
+import {ListDocument, HelloWorld} from '../../wailsjs/go/blog/Blog'
 import {FloatButton} from 'antd';
 
 
@@ -29,12 +31,10 @@ export function AddBlogButton() {
     );
 }
 
-export function BlogCard({ cover, title, description}) {
-    // let cover = "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-    // const title = "Card title"
-    // const description = "This is the description"
+
+export function BlogCard({cover, title, description}) {
     return (
-        <Col span={6}>
+        <Col span={12}>
             <Card
                 style={{
                     width: 300,
@@ -65,6 +65,20 @@ export function BlogCard({ cover, title, description}) {
 
 export default function Blog() {
 
+    const [documentList, setDocumentList] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await ListDocument();
+                setDocumentList(res); // 更新状态，触发重新渲染
+                console.log("数据已加载:", res);
+            } catch (error) {
+                console.error("加载失败:", error);
+            }
+        };
+        fetchData();
+    }, []); // 空依赖数组表示只在组件挂载时执行
+
 
     return (
         <div style={{
@@ -72,9 +86,9 @@ export default function Blog() {
         }}>
 
             <Row gutter={[32, 32]} style={{
-                "margin-left":32,
+                "marginLeft": 32,
             }}>
-                <Col span={6}>
+                <Col span={12}>
                     <Card
                         style={{
                             width: 300,
@@ -98,9 +112,8 @@ export default function Blog() {
                         />
                     </Card>
                 </Col>
-                <BlogCard title={"Card title"}></BlogCard>
-                <BlogCard></BlogCard>
-                <BlogCard></BlogCard>
+
+                <BlogCard title={"Card title"} description={documentList[0].description}></BlogCard>
 
             </Row>
             <AddBlogButton></AddBlogButton>

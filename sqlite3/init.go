@@ -9,7 +9,7 @@ import (
 
 var (
 	//documentDB                 *sql.DB
-	documentDB                 *gorm.DB
+	documentDB *gorm.DB
 
 	doGetSqlite3DocumentDBOnce sync.Once
 )
@@ -17,8 +17,7 @@ var (
 func InitDocumentDB() *gorm.DB {
 
 	doGetSqlite3DocumentDBOnce.Do(func() {
-		db, err := gorm.Open(sqlite.Open("BlogDB.db"), &gorm.Config{
-		})
+		db, err := gorm.Open(sqlite.Open("./sqlite3/BlogDB.db"), &gorm.Config{})
 		if err != nil {
 			panic(err)
 		}
